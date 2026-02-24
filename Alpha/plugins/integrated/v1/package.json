@@ -1,0 +1,8 @@
+{
+  "name": "lumi_con_bridge_integrated",
+  "version": "1.0.0",
+  "main": "main.js",
+  "dependencies": {
+    "@lumiastream/plugin": "*"
+  }
+}
