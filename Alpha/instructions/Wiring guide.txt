@@ -14,7 +14,7 @@ PARTS
 1) PICO <-> 6x6 MATRIX (matches pico sketch)
 -----------------------------------
 
-SEE INCLUDED IMAGES FOR DIODE WIRING
+SEE INCLUDED IMAGES FOR DIODE WIRING. the Kaahtode is oriented away from eh swtcith, a pcd will be designed at a later date
 
 MATRIX ROWS -> PICO (INPUT_PULLUP)
 R0 -> GP12
