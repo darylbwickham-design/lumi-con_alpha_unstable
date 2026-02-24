@@ -1,0 +1,85 @@
+============================================================
+LUMI-CON SETUP NOTES (COPY/PASTE)
+============================================================
+
+-----------------------------
+1) 6x6 ONLY (Matrix Relay)
+-----------------------------
+
+LUMIA (PC) - PLUGIN SETTINGS
+- Install/Enable plugin: matrix_relay_6x6_ver
+- Enable Listener: ON
+- Listen Port: 8787
+- Shared Secret: (leave blank) OR set a value
+
+ESP (DEVICE) - FIRMWARE SETTINGS (edit + flash)
+Set these to match Lumia plugin + your PC IP:
+
+const char* PLUGIN_HOST = "192.168.1.87"; // your PC IP
+constexpr uint16_t PLUGIN_PORT = 8787;    // same as Listen Port
+const char* PLUGIN_SECRET = "";           // same as Shared Secret (or blank)
+
+WHAT SHOULD HAPPEN
+- Press keys -> ESP POSTs to: http://PC_IP:8787/event
+- Lumia triggers short/long alerts with variations
+
+
+-----------------------------
+2) CHAT RELAY ONLY (TFT Chat Bridge)
+-----------------------------
+
+ESP (DEVICE) - WIFI SETUP (hardcoded sketch: espChatBridge.ino)
+Edit + flash:
+
+const char* WIFI_SSID = "YourWiFiName";
+const char* WIFI_PASS = "YourWiFiPassword";
+
+LUMIA (PC) - PLUGIN SETTINGS
+- Install/Enable plugin: ESP8266_TFT_Chat_Bridge
+- ESP Base URL: http://<ESP_IP>     (ESP IP shows on TFT)
+- Message Path: /msg
+- Clear Path: /clear
+
+QUICK TEST (browser)
+- http://<ESP_IP>/msg?t=Hello%20world
+- http://<ESP_IP>/clear
+
+
+-----------------------------
+3) INTEGRATED (One ESP build + One Integrated Plugin)
+-----------------------------
+
+ESP (DEVICE) - FIRST TIME WIFI (WiFiManager build)
+1) Power ESP -> it creates Wi-Fi AP: Lumi-Con-Setup
+2) Connect phone/PC to Lumi-Con-Setup
+3) Open: http://192.168.4.1
+4) Select home Wi-Fi + enter password -> Save
+5) ESP reboots -> TFT shows: IP: x.x.x.x
+
+LUMIA (PC) - PLUGIN SETTINGS (INTEGRATED PLUGIN)
+- Install/Enable integrated plugin (NEW ID, not the old ones)
+- Enable Listener: ON
+- Listen Port: 8787
+- Shared Secret: (leave blank) OR set a value
+- ESP Base URL: http://<ESP_IP>
+- UI Mode: legacy_get  (recommended)
+
+ESP (DEVICE) - FIRMWARE SETTINGS (edit + flash)
+Set these to match Lumia plugin + your PC IP:
+
+const char* PLUGIN_HOST = "192.168.1.87"; // your PC IP
+constexpr uint16_t PLUGIN_PORT = 8787;    // same as Listen Port
+const char* PLUGIN_SECRET = "";           // same as Shared Secret (or blank)
+
+ENDPOINTS USED (FYI)
+- Events (ESP -> PC plugin): POST http://<PC_IP>:8787/event   body: {"event":0..71}
+- Screen (plugin -> ESP):
+  - GET http://<ESP_IP>/msg?t=...
+  - GET http://<ESP_IP>/status?t=...
+  - GET http://<ESP_IP>/clear
+
+WHAT SHOULD HAPPEN
+- Press keys -> Lumia alerts trigger (same as old 6x6 plugin)
+- Plugin actions can send text to the TFT (/msg, /status, /clear)
+
+============================================================
