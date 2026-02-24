@@ -1,0 +1,61 @@
+LUMI-CON ALPHA WIRING HINTS
+
+the below wiring is for the integrated build however still works for isolated. if building just chat bridge then leave out all references to pico.
+if building the 6x6 then leave out all refernces to the tft screen
+if in doubt refer to the ino files 
+
+PARTS
+-----
+- ESP8266 (NodeMCU / Wemos D1 mini style)
+- Raspberry Pi Pico (RP2040)
+- 6x6 keyboard matrix (12 wires: R0..R5, C0..C5)
+- ST7735 1.8" TFT (SPI)
+
+1) PICO <-> 6x6 MATRIX (matches pico sketch)
+-----------------------------------
+
+SEE INCLUDED IMAGES FOR DIODE WIRING
+
+MATRIX ROWS -> PICO (INPUT_PULLUP)
+R0 -> GP12
+R1 -> GP1
+R2 -> GP2
+R3 -> GP3
+R4 -> GP4
+R5 -> GP5
+
+MATRIX COLS -> PICO (OUTPUT)
+C0 -> GP6
+C1 -> GP7
+C2 -> GP8
+C3 -> GP9
+C4 -> GP10
+C5 -> GP11
+
+2) PICO -> ESP8266 (UART link)
+-----------------------------------
+
+Pico GP0 (UART TX) -> ESP RX / GPIO3
+Pico GND           -> ESP GND
+
+(Optional, recommended: 1k resistor in series on the TX line)
+
+3) ESP8266 <-> ST7735 TFT (matches esp sketch)
+-----------------------------------
+
+TFT VCC -> ESP 3V3
+TFT GND -> ESP GND
+
+TFT SCK/SCL/CLK -> ESP D5 (GPIO14)
+TFT MOSI/SDA/DIN -> ESP D7 (GPIO13)
+
+TFT CS  -> ESP D2 (GPIO4)
+TFT DC  -> ESP D1 (GPIO5)
+TFT RST -> ESP D0 (GPIO16)
+
+NOTES (if TFT shows white screen)
+---------------------------------
+- Try a different ST7735 tab constant in code:
+  INITR_GREENTAB / INITR_REDTAB / INITR_BLACKTAB
+- If RST on D0 is flaky:
+  Wire TFT RST -> ESP RST and set TFT_RST = -1 in code.
