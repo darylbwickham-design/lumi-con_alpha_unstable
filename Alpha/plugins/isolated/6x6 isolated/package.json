@@ -1,0 +1,9 @@
+{
+  "name": "matrix-relay-6x6-ver",
+  "version": "1.0.0",
+  "private": true,
+  "main": "main.js",
+  "dependencies": {
+    "@lumiastream/plugin": "^0.4.0"
+  }
+}
