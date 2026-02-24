@@ -1,0 +1,67 @@
+{
+  "id": "esp8266_tft_chat_bridge",
+  "name": "ESP8266 TFT Chat Bridge",
+  "version": "1.0.3",
+  "author": "You",
+  "description": "Send text to an ESP8266 ST7735 TFT over HTTP (/msg?t=... and /clear).",
+  "license": "MIT",
+  "lumiaVersion": "^9.0.0",
+  "category": "devices",
+  "config": {
+    "settings_tutorial": "1) Flash the ESP8266 sketch and note its IP.\n2) Set Base URL to http://<ESP_IP>\n3) Use the actions: Display Message or Clear Screen.\n4) For Chat Match, map the matched text into the message field.",
+    "actions_tutorial": "Display Message -> sends GET /msg?t=...\nClear Screen -> sends GET /clear\n\nChat Match example:\nMatch: ^!lcd (.+)$\nAction: Display Message\nField message: $1",
+    "settings": [
+      {
+        "key": "baseUrl",
+        "label": "ESP Base URL",
+        "type": "url",
+        "defaultValue": "http://192.168.1.50",
+        "helperText": "Example: http://192.168.1.50 (no trailing slash)."
+      },
+      {
+        "key": "timeoutMs",
+        "label": "HTTP Timeout (ms)",
+        "type": "number",
+        "defaultValue": 2000,
+        "helperText": "Timeout waiting for the ESP to respond."
+      },
+      {
+        "key": "msgPath",
+        "label": "Message Path",
+        "type": "text",
+        "defaultValue": "/msg",
+        "helperText": "Your ESP sketch uses /msg?t=..."
+      },
+      {
+        "key": "clearPath",
+        "label": "Clear Path",
+        "type": "text",
+        "defaultValue": "/clear",
+        "helperText": "Your ESP sketch uses /clear"
+      }
+    ],
+    "actions": [
+      {
+        "type": "display_message",
+        "label": "Display Message",
+        "description": "Send a message to the ESP8266 display (ESP handles wrap + scroll).",
+        "fields": [
+          {
+            "key": "message",
+            "label": "Message",
+            "type": "text",
+			"allowVariables": true,
+            "defaultValue": "",
+            "helperText": "Text to send to the ESP. (Use Chat Match capture like $1.)"
+          }
+        ]
+      },
+      {
+        "type": "clear_screen",
+        "label": "Clear Screen",
+        "description": "Clear the TFT text buffer on the ESP8266.",
+        "fields": []
+      }
+    ]
+  }
+}
