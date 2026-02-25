@@ -213,7 +213,39 @@ npm install
 npx lumia-plugin validate .
 npx lumia-plugin build . --out .\lumi_con_bridge_integrated.lumiaplugin
 
-```bash
+---
+
+## PLUGIN ICON (ADD TO ANY PLUGIN)
+
+1) Put your icon file in the plugin folder (same folder as manifest.json)
+   Recommended name: icon.png
+
+   Suggested icon file (tight, readable):
+   lumi-con-icon-tight-256.png  -> rename to: icon.png
+
+2) Edit manifest.json (TOP LEVEL, near id/name/version) and add:
+
+"icon": "./icon.png",
+
+Example:
+
+{
+  "id": "your_plugin_id",
+  "name": "Your Plugin Name",
+  "version": "1.0.0",
+  "icon": "./icon.png",
+  ...
+}
+
+3) Rebuild the plugin:
+
 npm install
 npx lumia-plugin validate .
-npx lumia-plugin build . --out .\OUTPUT_NAME.lumiaplugin
+npx lumia-plugin build . --out .\YOUR_OUTPUT_NAME.lumiaplugin
+
+NOTES
+- The icon must be included in the plugin folder before you build.
+- PNG square icons work best (256x256 recommended).
+- If validate fails, double-check the icon path matches the filename exactly.
+
+---
