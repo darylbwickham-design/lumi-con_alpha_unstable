@@ -1,11 +1,12 @@
 {
   "id": "lumi_con_bridge_integrated",
   "name": "Lumi-Con Bridge (Integrated)",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "author": "You",
   "description": "Integrated: receives 0-71 matrix events over HTTP (/event) and triggers alerts (short/long) with 36 key variations. Also sends text to an ESP8266 TFT via /msg, /status, /clear (or /ui).",
   "license": "MIT",
   "lumiaVersion": "^9.0.0",
+  "icon": "./icon.png",
   "category": "devices",
   "config": {
     "settings_tutorial": "## ESP setup\n\n1) Flash your ESP firmware.\n2) In ESP console/TFT, note the device IP.\n3) Set **ESP Base URL** to http://<ESP_IP>\n\n## Matrix events\n\nESP will POST key events to:\nhttp://<PC_IP>:<Listen Port>/event\n\nIf you use a Shared Secret, ESP must send header X-Matrix-Secret.\n\n## TFT endpoints (your firmware)\n\nLegacy GET mode uses:\n- GET /msg?t=...\n- GET /status?t=...\n- GET /clear\n\nUI POST mode uses:\n- POST /ui  {\"channel\":\"chat|status|clear\",\"text\":\"...\"}\n",
@@ -45,8 +46,14 @@
         "type": "select",
         "defaultValue": "legacy_get",
         "options": [
-          { "label": "Legacy GET (/msg + /status + /clear)", "value": "legacy_get" },
-          { "label": "UI POST (/ui JSON)", "value": "ui_post" }
+          {
+            "label": "Legacy GET (/msg + /status + /clear)",
+            "value": "legacy_get"
+          },
+          {
+            "label": "UI POST (/ui JSON)",
+            "value": "ui_post"
+          }
         ],
         "helperText": "Use legacy_get now. Switch to ui_post later without changing actions."
       },
@@ -132,15 +139,27 @@
       }
     ],
     "variables": [
-      { "name": "event", "description": "Key index (0-35).", "value": 0 },
-      { "name": "kind", "description": "short or long", "value": "" },
-      { "name": "received_at", "description": "ISO timestamp of last event.", "value": "" }
+      {
+        "name": "event",
+        "description": "Key index (0-35).",
+        "value": 0
+      },
+      {
+        "name": "kind",
+        "description": "short or long",
+        "value": ""
+      },
+      {
+        "name": "received_at",
+        "description": "ISO timestamp of last event.",
+        "value": ""
+      }
     ],
     "alerts": [
       {
         "title": "6x6 short",
         "key": "matrix_6x6_short",
-        "acceptedVariables": ["event", "kind", "received_at"],
+        "acceptedVariables": [ "event", "kind", "received_at" ],
         "defaultMessage": "",
         "defaults": { "disableBaseAlert": true },
         "variationConditions": [
@@ -148,42 +167,150 @@
             "type": "EQUAL_SELECTION",
             "description": "Which Key (0-35). Compares Against dynamic.value.",
             "selections": [
-              { "label": "Key 0", "value": "0" },
-              { "label": "Key 1", "value": "1" },
-              { "label": "Key 2", "value": "2" },
-              { "label": "Key 3", "value": "3" },
-              { "label": "Key 4", "value": "4" },
-              { "label": "Key 5", "value": "5" },
-              { "label": "Key 6", "value": "6" },
-              { "label": "Key 7", "value": "7" },
-              { "label": "Key 8", "value": "8" },
-              { "label": "Key 9", "value": "9" },
-              { "label": "Key 10", "value": "10" },
-              { "label": "Key 11", "value": "11" },
-              { "label": "Key 12", "value": "12" },
-              { "label": "Key 13", "value": "13" },
-              { "label": "Key 14", "value": "14" },
-              { "label": "Key 15", "value": "15" },
-              { "label": "Key 16", "value": "16" },
-              { "label": "Key 17", "value": "17" },
-              { "label": "Key 18", "value": "18" },
-              { "label": "Key 19", "value": "19" },
-              { "label": "Key 20", "value": "20" },
-              { "label": "Key 21", "value": "21" },
-              { "label": "Key 22", "value": "22" },
-              { "label": "Key 23", "value": "23" },
-              { "label": "Key 24", "value": "24" },
-              { "label": "Key 25", "value": "25" },
-              { "label": "Key 26", "value": "26" },
-              { "label": "Key 27", "value": "27" },
-              { "label": "Key 28", "value": "28" },
-              { "label": "Key 29", "value": "29" },
-              { "label": "Key 30", "value": "30" },
-              { "label": "Key 31", "value": "31" },
-              { "label": "Key 32", "value": "32" },
-              { "label": "Key 33", "value": "33" },
-              { "label": "Key 34", "value": "34" },
-              { "label": "Key 35", "value": "35" }
+              {
+                "label": "Key 0",
+                "value": "0"
+              },
+              {
+                "label": "Key 1",
+                "value": "1"
+              },
+              {
+                "label": "Key 2",
+                "value": "2"
+              },
+              {
+                "label": "Key 3",
+                "value": "3"
+              },
+              {
+                "label": "Key 4",
+                "value": "4"
+              },
+              {
+                "label": "Key 5",
+                "value": "5"
+              },
+              {
+                "label": "Key 6",
+                "value": "6"
+              },
+              {
+                "label": "Key 7",
+                "value": "7"
+              },
+              {
+                "label": "Key 8",
+                "value": "8"
+              },
+              {
+                "label": "Key 9",
+                "value": "9"
+              },
+              {
+                "label": "Key 10",
+                "value": "10"
+              },
+              {
+                "label": "Key 11",
+                "value": "11"
+              },
+              {
+                "label": "Key 12",
+                "value": "12"
+              },
+              {
+                "label": "Key 13",
+                "value": "13"
+              },
+              {
+                "label": "Key 14",
+                "value": "14"
+              },
+              {
+                "label": "Key 15",
+                "value": "15"
+              },
+              {
+                "label": "Key 16",
+                "value": "16"
+              },
+              {
+                "label": "Key 17",
+                "value": "17"
+              },
+              {
+                "label": "Key 18",
+                "value": "18"
+              },
+              {
+                "label": "Key 19",
+                "value": "19"
+              },
+              {
+                "label": "Key 20",
+                "value": "20"
+              },
+              {
+                "label": "Key 21",
+                "value": "21"
+              },
+              {
+                "label": "Key 22",
+                "value": "22"
+              },
+              {
+                "label": "Key 23",
+                "value": "23"
+              },
+              {
+                "label": "Key 24",
+                "value": "24"
+              },
+              {
+                "label": "Key 25",
+                "value": "25"
+              },
+              {
+                "label": "Key 26",
+                "value": "26"
+              },
+              {
+                "label": "Key 27",
+                "value": "27"
+              },
+              {
+                "label": "Key 28",
+                "value": "28"
+              },
+              {
+                "label": "Key 29",
+                "value": "29"
+              },
+              {
+                "label": "Key 30",
+                "value": "30"
+              },
+              {
+                "label": "Key 31",
+                "value": "31"
+              },
+              {
+                "label": "Key 32",
+                "value": "32"
+              },
+              {
+                "label": "Key 33",
+                "value": "33"
+              },
+              {
+                "label": "Key 34",
+                "value": "34"
+              },
+              {
+                "label": "Key 35",
+                "value": "35"
+              }
             ]
           }
         ]
@@ -191,7 +318,7 @@
       {
         "title": "6x6 long",
         "key": "matrix_6x6_long",
-        "acceptedVariables": ["event", "kind", "received_at"],
+        "acceptedVariables": [ "event", "kind", "received_at" ],
         "defaultMessage": "",
         "defaults": { "disableBaseAlert": true },
         "variationConditions": [
@@ -199,42 +326,150 @@
             "type": "EQUAL_SELECTION",
             "description": "Which Key (0-35). Compares Against dynamic.value.",
             "selections": [
-              { "label": "Key 0", "value": "0" },
-              { "label": "Key 1", "value": "1" },
-              { "label": "Key 2", "value": "2" },
-              { "label": "Key 3", "value": "3" },
-              { "label": "Key 4", "value": "4" },
-              { "label": "Key 5", "value": "5" },
-              { "label": "Key 6", "value": "6" },
-              { "label": "Key 7", "value": "7" },
-              { "label": "Key 8", "value": "8" },
-              { "label": "Key 9", "value": "9" },
-              { "label": "Key 10", "value": "10" },
-              { "label": "Key 11", "value": "11" },
-              { "label": "Key 12", "value": "12" },
-              { "label": "Key 13", "value": "13" },
-              { "label": "Key 14", "value": "14" },
-              { "label": "Key 15", "value": "15" },
-              { "label": "Key 16", "value": "16" },
-              { "label": "Key 17", "value": "17" },
-              { "label": "Key 18", "value": "18" },
-              { "label": "Key 19", "value": "19" },
-              { "label": "Key 20", "value": "20" },
-              { "label": "Key 21", "value": "21" },
-              { "label": "Key 22", "value": "22" },
-              { "label": "Key 23", "value": "23" },
-              { "label": "Key 24", "value": "24" },
-              { "label": "Key 25", "value": "25" },
-              { "label": "Key 26", "value": "26" },
-              { "label": "Key 27", "value": "27" },
-              { "label": "Key 28", "value": "28" },
-              { "label": "Key 29", "value": "29" },
-              { "label": "Key 30", "value": "30" },
-              { "label": "Key 31", "value": "31" },
-              { "label": "Key 32", "value": "32" },
-              { "label": "Key 33", "value": "33" },
-              { "label": "Key 34", "value": "34" },
-              { "label": "Key 35", "value": "35" }
+              {
+                "label": "Key 0",
+                "value": "0"
+              },
+              {
+                "label": "Key 1",
+                "value": "1"
+              },
+              {
+                "label": "Key 2",
+                "value": "2"
+              },
+              {
+                "label": "Key 3",
+                "value": "3"
+              },
+              {
+                "label": "Key 4",
+                "value": "4"
+              },
+              {
+                "label": "Key 5",
+                "value": "5"
+              },
+              {
+                "label": "Key 6",
+                "value": "6"
+              },
+              {
+                "label": "Key 7",
+                "value": "7"
+              },
+              {
+                "label": "Key 8",
+                "value": "8"
+              },
+              {
+                "label": "Key 9",
+                "value": "9"
+              },
+              {
+                "label": "Key 10",
+                "value": "10"
+              },
+              {
+                "label": "Key 11",
+                "value": "11"
+              },
+              {
+                "label": "Key 12",
+                "value": "12"
+              },
+              {
+                "label": "Key 13",
+                "value": "13"
+              },
+              {
+                "label": "Key 14",
+                "value": "14"
+              },
+              {
+                "label": "Key 15",
+                "value": "15"
+              },
+              {
+                "label": "Key 16",
+                "value": "16"
+              },
+              {
+                "label": "Key 17",
+                "value": "17"
+              },
+              {
+                "label": "Key 18",
+                "value": "18"
+              },
+              {
+                "label": "Key 19",
+                "value": "19"
+              },
+              {
+                "label": "Key 20",
+                "value": "20"
+              },
+              {
+                "label": "Key 21",
+                "value": "21"
+              },
+              {
+                "label": "Key 22",
+                "value": "22"
+              },
+              {
+                "label": "Key 23",
+                "value": "23"
+              },
+              {
+                "label": "Key 24",
+                "value": "24"
+              },
+              {
+                "label": "Key 25",
+                "value": "25"
+              },
+              {
+                "label": "Key 26",
+                "value": "26"
+              },
+              {
+                "label": "Key 27",
+                "value": "27"
+              },
+              {
+                "label": "Key 28",
+                "value": "28"
+              },
+              {
+                "label": "Key 29",
+                "value": "29"
+              },
+              {
+                "label": "Key 30",
+                "value": "30"
+              },
+              {
+                "label": "Key 31",
+                "value": "31"
+              },
+              {
+                "label": "Key 32",
+                "value": "32"
+              },
+              {
+                "label": "Key 33",
+                "value": "33"
+              },
+              {
+                "label": "Key 34",
+                "value": "34"
+              },
+              {
+                "label": "Key 35",
+                "value": "35"
+              }
             ]
           }
         ]
