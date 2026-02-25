@@ -135,6 +135,84 @@ Common wiring for NodeMCU / Wemos D1 mini style ESP8266:
 ### Build (CLI)
 Open a terminal in the plugin folder (the folder containing `package.json`):
 
+PLUGIN BUILD (WINDOWS)
+
+1) Open CMD/PowerShell in the plugin folder (the folder with package.json)
+2) Run:
+
+npm install
+npx lumia-plugin validate .
+npx lumia-plugin build . --out .\OUTPUT_NAME.lumiaplugin
+
+BUILD 1 — 6x6 ONLY (Matrix Relay)
+
+PLUGIN (Lumia):
+- Install: matrix_relay_6x6_ver.lumiaplugin
+- Settings:
+  Enable Listener = ON
+  Listen Port = 8787
+  Shared Secret = (blank)
+
+ESP (edit + flash):
+const char* PLUGIN_HOST = "192.168.1.87"; // your PC IP
+constexpr uint16_t PLUGIN_PORT = 8787;    // same as Listen Port
+const char* PLUGIN_SECRET = "";           // same as Shared Secret (or blank)
+
+BUILD COMMAND (in plugin folder):
+npm install
+npx lumia-plugin validate .
+npx lumia-plugin build . --out .\matrix_relay_6x6_ver.lumiaplugin
+
+BUILD 2 — CHAT RELAY ONLY (TFT Chat Bridge)
+
+ESP (edit + flash espChatBridge.ino):
+const char* WIFI_SSID = "YourWiFiName";
+const char* WIFI_PASS = "YourWiFiPassword";
+
+PLUGIN (Lumia):
+- Install: ESP8266_TFT_Chat_Bridge.lumiaplugin
+- Settings:
+  ESP Base URL = http://<ESP_IP>
+  Message Path = /msg
+  Clear Path = /clear
+
+QUICK TEST (browser):
+http://<ESP_IP>/msg?t=Hello%20world
+http://<ESP_IP>/clear
+
+BUILD COMMAND (in plugin folder):
+npm install
+npx lumia-plugin validate .
+npx lumia-plugin build . --out .\ESP8266_TFT_Chat_Bridge.lumiaplugin
+
+BUILD 3 — INTEGRATED (One ESP + One Plugin)
+
+ESP (first-time WiFi):
+1) Power ESP -> WiFi AP appears: Lumi-Con-Setup
+2) Connect to Lumi-Con-Setup
+3) Open: http://192.168.4.1
+4) Select home WiFi + password -> Save
+5) ESP reboots -> TFT shows IP: x.x.x.x
+
+PLUGIN (Lumia):
+- Install: lumi_con_bridge_integrated.lumiaplugin (NEW ID)
+- Settings:
+  Enable Listener = ON
+  Listen Port = 8787
+  Shared Secret = (blank)
+  ESP Base URL = http://<ESP_IP>
+  UI Mode = legacy_get
+
+ESP (edit + flash integrated firmware):
+const char* PLUGIN_HOST = "192.168.1.87"; // your PC IP
+constexpr uint16_t PLUGIN_PORT = 8787;    // same as Listen Port
+const char* PLUGIN_SECRET = "";           // same as Shared Secret (or blank)
+
+BUILD COMMAND (in plugin folder):
+npm install
+npx lumia-plugin validate .
+npx lumia-plugin build . --out .\lumi_con_bridge_integrated.lumiaplugin
+
 ```bash
 npm install
 npx lumia-plugin validate .
