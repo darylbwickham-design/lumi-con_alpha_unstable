@@ -1,5 +1,5 @@
 /*
-  Lumi-Con ESP8266 firmware (integrated)
+  Lumi-Con ESP8266 firmware v0.0.1 (integrated)
   -------------------------------------
   - TFT display (ST7735 1.8" 128x160)
   - Receives display text via HTTP:
