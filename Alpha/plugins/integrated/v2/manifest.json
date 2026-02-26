@@ -1,0 +1,505 @@
+{
+  "id": "lumi_con_bridge_integrated_v2",
+  "name": "Lumi-Con Bridge (Integrated v2)",
+  "version": "1.0.0",
+  "author": "You",
+  "description": "Integrated v2: /event listener with seq ACK + /health; triggers 6x6 alerts and provides TFT actions.",
+  "license": "MIT",
+  "lumiaVersion": "^9.0.0",
+  "category": "devices",
+  "icon": "./icon.png",
+  "config": {
+    "settings_tutorial": "1) Install this plugin in Lumia.\n2) In plugin settings set Listen Port (default 8787). Optional Shared Secret.\n3) Set ESP Base URL to http://<ESP_IP> (shown on TFT) if you want to use TFT actions.\n\nESP sends key events to: http://<PC_IP>:<Listen Port>/event\nESP reachability check: http://<PC_IP>:<Listen Port>/health\n\nESP display endpoints:\n- GET /msg?t=...\n- GET /status?t=...\n- GET /clear\n- POST /ui {\"channel\":\"chat|status|clear\",\"text\":\"...\"}\n",
+    "actions_tutorial": "Display Message -> sends chat/log text to ESP.\nStatus Message -> sends status/confirm text to ESP.\nClear Screen -> clears the ESP display.\n\nMessage fields support Lumia variables/templates.",
+    "settings": [
+      {
+        "key": "enabled",
+        "label": "Enable Listener",
+        "type": "toggle",
+        "defaultValue": true,
+        "helperText": "Turns the HTTP listener on/off."
+      },
+      {
+        "key": "listenPort",
+        "label": "Listen Port",
+        "type": "number",
+        "defaultValue": 8787,
+        "helperText": "ESP will POST events to http://<this-pc-ip>:<port>/event"
+      },
+      {
+        "key": "secret",
+        "label": "Shared Secret (Optional)",
+        "type": "password",
+        "defaultValue": "",
+        "helperText": "If set, ESP must send header X-Matrix-Secret matching this value."
+      },
+      {
+        "key": "baseUrl",
+        "label": "ESP Base URL (Optional)",
+        "type": "url",
+        "defaultValue": "",
+        "helperText": "Needed only for TFT actions. Example: http://192.168.1.50"
+      },
+      {
+        "key": "uiMode",
+        "label": "ESP UI Mode",
+        "type": "select",
+        "defaultValue": "legacy_get",
+        "options": [
+          {
+            "label": "Legacy GET (/msg + /status + /clear)",
+            "value": "legacy_get"
+          },
+          {
+            "label": "UI POST (/ui JSON)",
+            "value": "ui_post"
+          }
+        ],
+        "helperText": "Use legacy_get now. Switch to ui_post later without changing actions."
+      },
+      {
+        "key": "timeoutMs",
+        "label": "HTTP Timeout (ms)",
+        "type": "number",
+        "defaultValue": 2000,
+        "helperText": "Timeout waiting for the ESP to respond."
+      },
+      {
+        "key": "msgPath",
+        "label": "Message Path",
+        "type": "text",
+        "defaultValue": "/msg",
+        "helperText": "Legacy GET: /msg?t=..."
+      },
+      {
+        "key": "statusPath",
+        "label": "Status Path",
+        "type": "text",
+        "defaultValue": "/status",
+        "helperText": "Legacy GET: /status?t=..."
+      },
+      {
+        "key": "clearPath",
+        "label": "Clear Path",
+        "type": "text",
+        "defaultValue": "/clear",
+        "helperText": "Legacy GET: /clear"
+      },
+      {
+        "key": "uiPath",
+        "label": "UI Path",
+        "type": "text",
+        "defaultValue": "/ui",
+        "helperText": "UI POST endpoint (default /ui)."
+      }
+    ],
+    "actions": [
+      {
+        "type": "display_message",
+        "label": "Display Message",
+        "description": "Send a message to the ESP display (chat/log).",
+        "fields": [
+          {
+            "key": "message",
+            "label": "Message",
+            "type": "text",
+            "defaultValue": "",
+            "allowVariables": true,
+            "helperText": "Text to send. Supports Lumia variables/templates."
+          }
+        ]
+      },
+      {
+        "type": "status_message",
+        "label": "Status Message",
+        "description": "Send a status/confirm line to the ESP.",
+        "fields": [
+          {
+            "key": "message",
+            "label": "Message",
+            "type": "text",
+            "defaultValue": "",
+            "allowVariables": true,
+            "helperText": "Status text. Supports Lumia variables/templates."
+          }
+        ]
+      },
+      {
+        "type": "clear_screen",
+        "label": "Clear Screen",
+        "description": "Clear the ESP display buffers.",
+        "fields": []
+      }
+    ],
+    "variables": [
+      {
+        "name": "event",
+        "description": "Key index (0-35).",
+        "value": 0
+      },
+      {
+        "name": "kind",
+        "description": "short or long",
+        "value": ""
+      },
+      {
+        "name": "received_at",
+        "description": "ISO timestamp of last event.",
+        "value": ""
+      },
+      {
+        "name": "device_id",
+        "description": "DeviceId string (if provided).",
+        "value": ""
+      },
+      {
+        "name": "seq",
+        "description": "Sequence number (if provided).",
+        "value": 0
+      },
+      {
+        "name": "held_ms",
+        "description": "Held duration ms (if provided).",
+        "value": 0
+      }
+    ],
+    "alerts": [
+      {
+        "title": "6x6 short",
+        "key": "matrix_6x6_short",
+        "acceptedVariables": [
+          "event",
+          "kind",
+          "received_at",
+          "device_id",
+          "seq",
+          "held_ms"
+        ],
+        "defaultMessage": "",
+        "defaults": {
+          "disableBaseAlert": true
+        },
+        "variationConditions": [
+          {
+            "type": "EQUAL_SELECTION",
+            "description": "Which Key (0-35). Compares Against dynamic.value.",
+            "selections": [
+              {
+                "label": "Key 0",
+                "value": "0"
+              },
+              {
+                "label": "Key 1",
+                "value": "1"
+              },
+              {
+                "label": "Key 2",
+                "value": "2"
+              },
+              {
+                "label": "Key 3",
+                "value": "3"
+              },
+              {
+                "label": "Key 4",
+                "value": "4"
+              },
+              {
+                "label": "Key 5",
+                "value": "5"
+              },
+              {
+                "label": "Key 6",
+                "value": "6"
+              },
+              {
+                "label": "Key 7",
+                "value": "7"
+              },
+              {
+                "label": "Key 8",
+                "value": "8"
+              },
+              {
+                "label": "Key 9",
+                "value": "9"
+              },
+              {
+                "label": "Key 10",
+                "value": "10"
+              },
+              {
+                "label": "Key 11",
+                "value": "11"
+              },
+              {
+                "label": "Key 12",
+                "value": "12"
+              },
+              {
+                "label": "Key 13",
+                "value": "13"
+              },
+              {
+                "label": "Key 14",
+                "value": "14"
+              },
+              {
+                "label": "Key 15",
+                "value": "15"
+              },
+              {
+                "label": "Key 16",
+                "value": "16"
+              },
+              {
+                "label": "Key 17",
+                "value": "17"
+              },
+              {
+                "label": "Key 18",
+                "value": "18"
+              },
+              {
+                "label": "Key 19",
+                "value": "19"
+              },
+              {
+                "label": "Key 20",
+                "value": "20"
+              },
+              {
+                "label": "Key 21",
+                "value": "21"
+              },
+              {
+                "label": "Key 22",
+                "value": "22"
+              },
+              {
+                "label": "Key 23",
+                "value": "23"
+              },
+              {
+                "label": "Key 24",
+                "value": "24"
+              },
+              {
+                "label": "Key 25",
+                "value": "25"
+              },
+              {
+                "label": "Key 26",
+                "value": "26"
+              },
+              {
+                "label": "Key 27",
+                "value": "27"
+              },
+              {
+                "label": "Key 28",
+                "value": "28"
+              },
+              {
+                "label": "Key 29",
+                "value": "29"
+              },
+              {
+                "label": "Key 30",
+                "value": "30"
+              },
+              {
+                "label": "Key 31",
+                "value": "31"
+              },
+              {
+                "label": "Key 32",
+                "value": "32"
+              },
+              {
+                "label": "Key 33",
+                "value": "33"
+              },
+              {
+                "label": "Key 34",
+                "value": "34"
+              },
+              {
+                "label": "Key 35",
+                "value": "35"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "6x6 long",
+        "key": "matrix_6x6_long",
+        "acceptedVariables": [
+          "event",
+          "kind",
+          "received_at",
+          "device_id",
+          "seq",
+          "held_ms"
+        ],
+        "defaultMessage": "",
+        "defaults": {
+          "disableBaseAlert": true
+        },
+        "variationConditions": [
+          {
+            "type": "EQUAL_SELECTION",
+            "description": "Which Key (0-35). Compares Against dynamic.value.",
+            "selections": [
+              {
+                "label": "Key 0",
+                "value": "0"
+              },
+              {
+                "label": "Key 1",
+                "value": "1"
+              },
+              {
+                "label": "Key 2",
+                "value": "2"
+              },
+              {
+                "label": "Key 3",
+                "value": "3"
+              },
+              {
+                "label": "Key 4",
+                "value": "4"
+              },
+              {
+                "label": "Key 5",
+                "value": "5"
+              },
+              {
+                "label": "Key 6",
+                "value": "6"
+              },
+              {
+                "label": "Key 7",
+                "value": "7"
+              },
+              {
+                "label": "Key 8",
+                "value": "8"
+              },
+              {
+                "label": "Key 9",
+                "value": "9"
+              },
+              {
+                "label": "Key 10",
+                "value": "10"
+              },
+              {
+                "label": "Key 11",
+                "value": "11"
+              },
+              {
+                "label": "Key 12",
+                "value": "12"
+              },
+              {
+                "label": "Key 13",
+                "value": "13"
+              },
+              {
+                "label": "Key 14",
+                "value": "14"
+              },
+              {
+                "label": "Key 15",
+                "value": "15"
+              },
+              {
+                "label": "Key 16",
+                "value": "16"
+              },
+              {
+                "label": "Key 17",
+                "value": "17"
+              },
+              {
+                "label": "Key 18",
+                "value": "18"
+              },
+              {
+                "label": "Key 19",
+                "value": "19"
+              },
+              {
+                "label": "Key 20",
+                "value": "20"
+              },
+              {
+                "label": "Key 21",
+                "value": "21"
+              },
+              {
+                "label": "Key 22",
+                "value": "22"
+              },
+              {
+                "label": "Key 23",
+                "value": "23"
+              },
+              {
+                "label": "Key 24",
+                "value": "24"
+              },
+              {
+                "label": "Key 25",
+                "value": "25"
+              },
+              {
+                "label": "Key 26",
+                "value": "26"
+              },
+              {
+                "label": "Key 27",
+                "value": "27"
+              },
+              {
+                "label": "Key 28",
+                "value": "28"
+              },
+              {
+                "label": "Key 29",
+                "value": "29"
+              },
+              {
+                "label": "Key 30",
+                "value": "30"
+              },
+              {
+                "label": "Key 31",
+                "value": "31"
+              },
+              {
+                "label": "Key 32",
+                "value": "32"
+              },
+              {
+                "label": "Key 33",
+                "value": "33"
+              },
+              {
+                "label": "Key 34",
+                "value": "34"
+              },
+              {
+                "label": "Key 35",
+                "value": "35"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

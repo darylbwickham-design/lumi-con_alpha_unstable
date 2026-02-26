@@ -1,0 +1,10 @@
+{
+  "name": "lumi-con-bridge-integrated-v2",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "main.js",
+  "dependencies": {
+    "@lumiastream/plugin": "^0.4.4"
+  }
+}
