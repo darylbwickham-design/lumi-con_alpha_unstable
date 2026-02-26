@@ -1,0 +1,75 @@
+# Release Notes — Lumi-Con Integrated Plugin (v1 → v5.1)
+
+Short, user-facing notes you can paste into GitHub Releases, README highlights, or YouTube descriptions.
+
+---
+
+## v5.1 — Optional Debug Toasts (Latest)
+- Added **optional debug toasts** inside Lumia (default OFF).
+- Toast modes:
+  - **Important**: toasts only on **Connected** and **Offline**
+  - **Verbose**: toasts on **Connected/Offline** + **every key event** + **every TFT action**
+- Includes basic **rate limiting** so it won’t spam too hard.
+
+Best for: troubleshooting, builder support, quick verification during setup.
+
+---
+
+## v5.0 — Device Status + Offline Detection
+- Added **offline detection** (no events for ~30s → device marked offline).
+- Added `device_status_text` variable (single-line “device health” string).
+- Keeps device status variables up-to-date automatically.
+
+Best for: “professional feel” + easy overlays (“connected/offline”) + support.
+
+---
+
+## v4.0 — Separate Key Label Pages (Short vs Long)
+- Added **two independent key label maps**:
+  - **Key labels (Short 0–35)**
+  - **Key labels (Long 0–35)**
+- `key_label` automatically matches the press type (short/long).
+
+Best for: real stream-deck behavior (two layers) without confusion.
+
+---
+
+## v3.0 — Onboarding + Key Labels + Device Vars
+- Improved **out-of-box experience** (sane defaults, minimal required setup).
+- Added **key labels (0–35)** mapping and `key_label` variable.
+- Added baseline **device status variables** (id, last seen, rssi, connected, etc.).
+
+Best for: users who want a cleaner “product” experience.
+
+---
+
+## v2.0 — Confirmed Delivery (Seq ACK + /health + Dedupe)
+- Added `GET /health` endpoint on the plugin listener.
+- Added **seq ACK** response for `/event` so “confirmed mode” works reliably.
+- Added **dedupe** using `(deviceId, seq)` to prevent double triggers during retries.
+
+Best for: reliability and “appliance grade” behavior.
+
+---
+
+## v1.0 — First Integrated Release
+- Combined **matrix event listener** + **TFT display actions** into one plugin.
+- Two alerts (Short + Long) with **36 variations each**.
+- Display actions for TFT:
+  - Display Message, Status Message, Clear Screen
+- Supports both display modes:
+  - **Legacy GET** (`/msg`, `/status`, `/clear`)
+  - **UI POST** (`/ui` JSON)
+
+Best for: getting the full stack working quickly.
+
+---
+
+# Upgrade Summary (One-liners)
+- **v1 → v2:** reliability foundation (health + ack + dedupe)
+- **v2 → v3:** onboarding + labels + device status variables
+- **v3 → v4:** short/long label maps split cleanly
+- **v4 → v5:** offline detection + single status string for overlays
+- **v5 → v5.1:** optional Lumia toasts for debugging/support
+
+---

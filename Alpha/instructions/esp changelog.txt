@@ -1,0 +1,83 @@
+# Firmware Changelog — Lumi-Con ESP8266 (v1 → v3)
+
+This tracks the ESP8266 firmware evolution as you’re defining it:
+
+- **v1** = `lumi_con_esp_inetraged_0_0_1.ino` (baseline integrated)
+- **v2** = `lumi_con_esp_integrated_0_0_2.ino` (support/self-test + /health + seq payload)
+- **v3** = `lumi_con_esp_integrated_0_0_3.ino` (mode select + confirmed/legacy + TFT ACK feedback)
+
+---
+
+## v3 (Mode Select + Confirm/Legacy + Pro TFT Feedback)
+**Key features**
+- **Boot mode selection via Pico matrix** (no ESP GPIO buttons required):
+  - Key **1** = **LEGACY** mode (works with old plugins; treats HTTP 2xx as success)
+  - Key **2** = **CONFIRMED** mode (requires `{ ok:true, seq:<same> }` ACK)
+  - ESP **waits until a choice is made** (no auto mode)
+- **Professional TFT feedback**
+  - Two-line header:
+    - Line 1: prompts + transient messages
+    - Line 2: IP + last key pressed
+  - Shows transient results like **ACK OK** / **ACK FAIL**
+  - Transient expiry redraw (message clears cleanly)
+- **Diagnostics**
+  - LED “press tick” on every PRESS packet (verifies Pico/UART is alive)
+  - Keeps success/failure blink patterns on event send
+
+**Compatibility**
+- Fully compatible with v2/v1 endpoints:
+  - `/msg`, `/status`, `/clear`, `/ui`, `/health`
+- Works with old plugins in LEGACY mode.
+- Best reliability with new plugins in CONFIRMED mode.
+
+---
+
+## v2 (Self-Test + /health + deviceId + seq payload)
+**Key features**
+- **Self-test / startup visibility**
+  - TFT displays **IP** after WiFi connect
+  - TFT updates with **last key pressed** (K:##S / K:##L)
+- **Support endpoints**
+  - Adds `GET /health` on ESP returning JSON:
+    - `deviceId`, `ip`, `rssi`, `uptimeMs`, `lastKey`, `lastSeq`, `lastAck`, `lastPostOk`
+- **Richer event payload (backwards compatible)**
+  - Still sends `{"event":N}` semantics
+  - Adds optional fields: `seq`, `deviceId`, `key`, `press`, `heldMs`, `uptimeMs`, `rssi`
+- **LED diagnostics**
+  - WiFi OK: **2 quick blinks**
+  - PC reachable (plugin `/health`): **3 quick blinks**
+  - PC unreachable: **3 slow blinks**
+  - Pico detected (first valid UART packet): **1 quick blink**
+- **Factory reset**
+  - Hold **Key 0** at boot to wipe WiFiManager credentials and restart
+
+**Compatibility**
+- Endpoints unchanged from v1 plus new `/health`
+- Event format remains compatible with old plugins (they ignore extra JSON fields)
+
+---
+
+## v1 (Baseline Integrated Firmware)
+**Key features**
+- WiFi connect (either hardcoded or early WiFiManager baseline depending on your initial file)
+- TFT message endpoints:
+  - `GET /msg?t=...`
+  - `GET /clear`
+  - (and in later baseline builds: `/status`, `/ui`)
+- Reads Pico UART packets (`A5 type key xor`)
+- Sends key events to Lumia plugin:
+  - `POST /event` with `{"event":0..71}` (short/long encoding)
+
+**Compatibility**
+- Established the core “contract” that remains stable through v2/v3:
+  - Pico → ESP UART unchanged
+  - ESP → plugin `/event` unchanged
+  - Display endpoints retained
+
+---
+
+# Upgrade Summary (One-liners)
+- **v1 → v2:** added self-test, `/health`, richer event payload, factory reset, and startup diagnostics
+- **v2 → v3:** added user-selected reliability mode (legacy vs confirmed) and professional TFT feedback (ACK OK/FAIL + two-line header)
+
+---

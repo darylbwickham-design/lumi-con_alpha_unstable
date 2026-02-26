@@ -1,0 +1,173 @@
+# Changelog — Lumi-Con Lumia Plugin (Integrated)
+
+This changelog tracks the evolution of the **integrated Lumi-Con Lumia plugin** from **v1.0.0 → v5.1**.
+
+Legend:
+- ✅ Added
+- 🔁 Changed
+- 🛠 Fixed
+- ⚠️ Compatibility note
+
+---
+
+## v5.1 (Debug Toasts) — Current
+✅ **Optional debug toasts**
+- Adds settings to enable/disable toasts (default OFF).
+- Toast modes:
+  - **Important**: device connect + device offline only
+  - **Verbose**: toasts for connect/offline + every key event + every TFT action
+- Includes toast throttling to reduce spam when keys are pressed rapidly.
+
+🔁 **Professional UX**
+- Keeps normal users quiet by default; enables “diagnostic mode” for builders/support.
+
+⚠️ Compatibility
+- Fully backwards compatible with firmware payloads:
+  - Works with `{event:N}` only
+  - Works with `{event, seq, deviceId, ...}`
+
+---
+
+## v5.0 (Device Status + Offline Detection)
+✅ **Offline detection**
+- Tracks last event timestamp.
+- Sets `device_connected=false` if no events arrive within an **offline timeout** (default ~30s).
+- Flips back to online automatically on next event.
+
+✅ **Single-line status variable**
+- Adds/maintains `device_status_text` (e.g. `CONNECTED | RSSI -55 | 12s ago`, or `OFFLINE`).
+
+✅ **More “appliance-grade” status variables**
+- Consistently updates `device_id`, `device_ip`, `device_last_seen`, `device_rssi`, `device_connected`.
+
+🔁 **Minimal setup focus**
+- Works out-of-box with defaults (listen port 8787).
+- Display/TFT settings remain optional.
+
+⚠️ Compatibility
+- Does not require firmware changes.
+- Still supports legacy devices and legacy plugins (depending on mode selection on device).
+
+---
+
+## v4.0 (Separate Key Label Pages: Short vs Long)
+✅ **Two independent key label maps**
+- Adds **Key labels (Short 0–35)** and **Key labels (Long 0–35)** as separate settings.
+- `key_label` is selected from the correct list based on `kind` (short vs long).
+
+⚠️ Compatibility
+- Keeps compatibility with older single `keyLabels` field as fallback:
+  - If short/long lists are empty, the plugin can still use the legacy list for both.
+
+🛠 UX improvement
+- Makes “short vs long press” feel like two separate control layers, matching real stream-deck behavior.
+
+---
+
+## v3.0 (Onboarding + Device Vars + Key Labels)
+✅ **Professional onboarding / minimal setup**
+- Defaults designed to “just work”:
+  - Listener enabled by default
+  - Default port 8787
+- Advanced fields hidden behind “Show advanced settings” (where supported).
+
+✅ **Device status variables (baseline set)**
+- Tracks device presence on events and writes to Lumia variables:
+  - `device_id`, `device_ip`, `device_last_seen`, `device_rssi`, `device_connected`
+  - `seq`, `held_ms` (when present)
+
+✅ **Key label mapping (single list)**
+- Adds `Key labels (0–35)` setting (one label per line).
+- Adds variable `key_label` and includes it in `extraSettings` for use in templates/alerts.
+
+✅ **Reliability improvements retained**
+- Continues v2 behavior: seq ACK support + dedupe.
+
+⚠️ Compatibility
+- Works with legacy `{event:N}`.
+- Works with newer payloads containing `seq/deviceId`.
+
+---
+
+## v2.0 (Seq ACK + /health + Dedupe)
+✅ **/health endpoint on plugin**
+- Adds `GET /health` to confirm the plugin listener is up.
+
+✅ **Seq ACK support**
+- On `POST /event`, replies with JSON:
+  - `{ ok: true, seq: <echo> }` when `seq` is provided.
+- Enables confirmed mode on device firmware.
+
+✅ **Dedupe / retry safety**
+- Dedupes repeated events using `(deviceId, seq)` when available.
+- Prevents double-triggering if the ESP retries.
+
+⚠️ Compatibility
+- Still accepts legacy `{event:N}` payloads.
+- If `seq` is missing, plugin behaves like v1 but with safer response handling.
+
+---
+
+## v1.0 (Initial Integrated Plugin)
+✅ **First combined plugin**
+- Single plugin that:
+  - Listens for ESP events at `POST /event`
+  - Triggers two alerts (short + long), each with 36 key variations
+  - Provides TFT actions:
+    - Display Message (to `/msg` or `/ui` depending on mode)
+    - Status Message (to `/status` or `/ui`)
+    - Clear Screen (to `/clear` or `/ui`)
+
+✅ **Legacy display compatibility**
+- Supports “Legacy GET” endpoints for TFT:
+  - `/msg`, `/status`, `/clear`
+- Optional support for `POST /ui` for future UI expansion.
+
+⚠️ Compatibility
+- Designed to work with the original ESP event scheme:
+  - `event: 0..35` = short press
+  - `event: 36..71` = long press (key + 36)
+
+---
+
+# “Between Versions” Summary (What changed each step)
+
+- **v1 → v2**
+  - Added `/health`, seq ACK response, and dedupe so confirmed delivery is possible and retries don’t double-trigger.
+
+- **v2 → v3**
+  - Made it feel like a real product: minimal setup defaults, device status variables, and key labels (single list).
+
+- **v3 → v4**
+  - Split key labels into two independent maps: short and long press layers (more “stream deck” feel).
+
+- **v4 → v5**
+  - Added offline detection + a single `device_status_text` variable for clean overlays/support.
+
+- **v5 → v5.1**
+  - Added optional debug toasts (connect/offline, and optionally per-event/actions) with throttling.
+
+---
+
+# Appendix — Firmware Milestones (Optional Reference)
+
+## Firmware v0.0.1 (Baseline integrated)
+- WiFiManager provisioning
+- TFT endpoints: `/msg`, `/status`, `/clear`, optional `/ui`
+- Pico UART events → POST `/event`
+
+## Firmware v0.0.2 (Self-test + /health + deviceId + seq)
+- Added `/health` on device
+- Added `deviceId` + `seq` in POST payload
+- Added basic boot feedback (WiFi ok, etc.)
+
+## Firmware v0.0.3 (Mode select + Confirmed/Legacy + TFT ACK feedback)
+- On boot: wait for Pico matrix choice:
+  - Key 1 = Legacy
+  - Key 2 = Confirmed (requires seq ACK)
+- Added TFT transient status:
+  - `ACK OK` / `ACK FAIL`
+- Header improved to keep IP visible while showing prompts/messages
+- LED press-tick added for Pico diagnostics
+
+---

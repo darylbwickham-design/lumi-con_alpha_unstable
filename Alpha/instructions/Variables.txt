@@ -1,0 +1,90 @@
+Variables added by the v3 plugin
+event (number)
+
+Meaning: Key index 0–35 (always the “base key number”, even for long presses)
+
+Recommended use: Use in variations and templates to identify which key fired.
+
+Example: Key {{event}}
+
+kind (text)
+
+Meaning: "short" or "long"
+
+Recommended use: Use to differentiate “tap vs hold” actions in overlays/messages.
+
+Example: {{kind}} press
+
+received_at (text)
+
+Meaning: ISO timestamp when the plugin processed the event
+
+Recommended use: Debug overlays, logging, “last input time”.
+
+Example: Last input: {{received_at}}
+
+device_id (text)
+
+Meaning: Device identifier sent by the ESP (deviceId)
+
+Recommended use: Support/debug (“which device is this?”), future-proofing if you ever add more devices.
+
+Example: Device: {{device_id}}
+
+seq (number)
+
+Meaning: Sequence number from the ESP (used for confirmed ACK/dedupe)
+
+Recommended use: Debug reliability and duplicate checking.
+
+Example: Seq {{seq}}
+
+held_ms (number)
+
+Meaning: How long the key was held (ms), if the device sends it
+
+Recommended use: Debug, or show hold duration in overlays.
+
+Example: Held: {{held_ms}}ms
+
+device_ip (text)
+
+Meaning: The IP the plugin sees for the device (best-effort)
+
+Recommended use: Support/debug (helps users find the ESP on their network).
+
+Example: ESP IP: {{device_ip}}
+
+device_last_seen (text)
+
+Meaning: ISO timestamp of the last event seen from the device
+
+Recommended use: “Online” indicator overlays, troubleshooting.
+
+Example: Last seen: {{device_last_seen}}
+
+device_rssi (number)
+
+Meaning: Wi-Fi signal strength reported by the device (RSSI)
+
+Recommended use: Diagnose flaky Wi-Fi / missed events.
+
+Example: WiFi RSSI: {{device_rssi}}
+
+device_connected (boolean)
+
+Meaning: true once the plugin has received at least one event since load
+
+Recommended use: A simple “connected” status overlay.
+
+Example: Connected: {{device_connected}}
+
+key_label (text)
+
+Meaning: Friendly label pulled from your Key labels (0–35) setting
+
+Recommended use: Make everything feel professional (users see “Lights” not “Key 0”).
+
+Example: {{key_label}} ({{kind}})
+
+Best practice: use key_label everywhere you’d normally show a key number. Keep event only for debugging or internal mapping.

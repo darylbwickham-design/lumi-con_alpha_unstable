@@ -1,0 +1,52 @@
+========================================
+Lumi-Con Plugin Build Commands (3 Builds)
+========================================
+
+PREREQS (one-time)
+- Install Node.js (LTS)
+- Open a terminal in the plugin folder (the folder containing package.json)
+
+----------------------------------------
+A) 6x6 ONLY (matrix_relay_6x6_ver)
+----------------------------------------
+
+cd <PATH_TO_PLUGIN_FOLDER>
+npm install
+npx lumia-plugin validate .
+npx lumia-plugin build . --out .\matrix_relay_6x6_ver.lumiaplugin
+
+----------------------------------------
+B) TFT CHAT ONLY (ESP8266_TFT_Chat_Bridge)
+----------------------------------------
+
+cd <PATH_TO_PLUGIN_FOLDER>
+npm install
+npx lumia-plugin validate .
+npx lumia-plugin build . --out .\ESP8266_TFT_Chat_Bridge.lumiaplugin
+
+----------------------------------------
+C) INTEGRATED (recommended one-plugin build)
+----------------------------------------
+
+cd <PATH_TO_PLUGIN_FOLDER>
+npm install
+npx lumia-plugin validate .
+npx lumia-plugin build . --out .\lumi_con_bridge_integrated.lumiaplugin
+
+----------------------------------------
+NOTES
+----------------------------------------
+- <PATH_TO_PLUGIN_FOLDER> is the folder containing manifest.json + main.js + package.json.
+- Output filename can be anything, but keep it ending in .lumiaplugin.
+- After building, install in Lumia: Configuration -> Plugins -> Install Manually (select the .lumiaplugin).
+========================================
+
+========================================
+Linux/Mac OS users
+========================================
+
+
+npx lumia-plugin build . --out ./matrix_relay_6x6_ver.lumiaplugin
+npx lumia-plugin build . --out ./ESP8266_TFT_Chat_Bridge.lumiaplugin
+npx lumia-plugin build . --out ./lumi_con_bridge_integrated.lumiaplugin
+
