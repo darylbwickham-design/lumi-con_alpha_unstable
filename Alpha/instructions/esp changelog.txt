@@ -1,10 +1,28 @@
-# Firmware Changelog — Lumi-Con ESP8266 (v1 → v3)
+# Firmware Changelog — Lumi-Con ESP8266 (v1 → v4)
 
 This tracks the ESP8266 firmware evolution as you’re defining it:
 
-- **v1** = `lumi_con_esp_inetraged_0_0_1.ino` (baseline integrated)
+- **v1** = `lumi_con_esp_integrated_0_0_1.ino` (baseline integrated)
 - **v2** = `lumi_con_esp_integrated_0_0_2.ino` (support/self-test + /health + seq payload)
 - **v3** = `lumi_con_esp_integrated_0_0_3.ino` (mode select + confirmed/legacy + TFT ACK feedback)
+- **v4** = `lumi_con_esp_integrated_0_0_4.ino` (performance: partial redraws)
+
+---
+
+## v4 (Performance Update: Partial Redraw)
+**Key features**
+- **Faster display updates** by switching from full-screen redraws to **partial redraws**:
+  - Header Line 1 redraws only when transient/prompt changes or expires
+  - Header Line 2 redraws only when status/last-key changes
+  - Chat area redraws only when chat content changes (new message / clear)
+- **Same visible UI / same behaviour** (text content, layout, endpoints, prompts, ACK messages unchanged)
+- Reduces flicker and SPI traffic, improving responsiveness
+
+**Compatibility**
+- Endpoints unchanged:
+  - `/msg`, `/status`, `/clear`, `/ui`, `/health`
+- Pico UART protocol unchanged
+- Works with existing Lumia plugin versions the same as v3
 
 ---
 
@@ -27,8 +45,8 @@ This tracks the ESP8266 firmware evolution as you’re defining it:
 **Compatibility**
 - Fully compatible with v2/v1 endpoints:
   - `/msg`, `/status`, `/clear`, `/ui`, `/health`
-- Works with old plugins in LEGACY mode.
-- Best reliability with new plugins in CONFIRMED mode.
+- Works with old plugins in LEGACY mode
+- Best reliability with new plugins in CONFIRMED mode
 
 ---
 
@@ -69,15 +87,16 @@ This tracks the ESP8266 firmware evolution as you’re defining it:
   - `POST /event` with `{"event":0..71}` (short/long encoding)
 
 **Compatibility**
-- Established the core “contract” that remains stable through v2/v3:
+- Established the core “contract” that remains stable through later versions:
   - Pico → ESP UART unchanged
   - ESP → plugin `/event` unchanged
   - Display endpoints retained
 
 ---
 
-# Upgrade Summary (One-liners)
+# Upgrade Summary
 - **v1 → v2:** added self-test, `/health`, richer event payload, factory reset, and startup diagnostics
 - **v2 → v3:** added user-selected reliability mode (legacy vs confirmed) and professional TFT feedback (ACK OK/FAIL + two-line header)
+- **v3 → v4:** improved performance by switching from full-screen redraws to partial redraws (header/chat redraw only when changed)
 
 ---

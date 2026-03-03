@@ -1,5 +1,5 @@
 ========================================
-Lumi-Con Plugin Build Commands (3 Builds)
+Lumi-Con Plugin Build Commands
 ========================================
 
 PREREQS (one-time)
@@ -7,13 +7,13 @@ PREREQS (one-time)
 - Open a terminal in the plugin folder (the folder containing package.json)
 
 ----------------------------------------
-A) 6x6 ONLY (matrix_relay_6x6_ver)
+A) INTEGRATED v5.2 (used for 6×6 ONLY and INTEGRATED)
 ----------------------------------------
 
 cd <PATH_TO_PLUGIN_FOLDER>
 npm install
 npx lumia-plugin validate .
-npx lumia-plugin build . --out .\matrix_relay_6x6_ver.lumiaplugin
+npx lumia-plugin build . --out .\lumi_con_bridge_integrated_v5_2.lumiaplugin
 
 ----------------------------------------
 B) TFT CHAT ONLY (ESP8266_TFT_Chat_Bridge)
@@ -25,13 +25,15 @@ npx lumia-plugin validate .
 npx lumia-plugin build . --out .\ESP8266_TFT_Chat_Bridge.lumiaplugin
 
 ----------------------------------------
-C) INTEGRATED (recommended one-plugin build)
+C) (Same as A)
+
+Use the same integrated plugin build for both “6×6 only” and “Integrated”.
 ----------------------------------------
 
 cd <PATH_TO_PLUGIN_FOLDER>
 npm install
 npx lumia-plugin validate .
-npx lumia-plugin build . --out .\lumi_con_bridge_integrated.lumiaplugin
+npx lumia-plugin build . --out .\lumi_con_bridge_integrated_v5_2.lumiaplugin
 
 ----------------------------------------
 NOTES
@@ -46,7 +48,6 @@ Linux/Mac OS users
 ========================================
 
 
-npx lumia-plugin build . --out ./matrix_relay_6x6_ver.lumiaplugin
+npx lumia-plugin build . --out ./lumi_con_bridge_integrated_v5_2.lumiaplugin
 npx lumia-plugin build . --out ./ESP8266_TFT_Chat_Bridge.lumiaplugin
-npx lumia-plugin build . --out ./lumi_con_bridge_integrated.lumiaplugin
-
+npx lumia-plugin build . --out ./lumi_con_bridge_integrated_v5_2.lumiaplugin

@@ -1,8 +1,10 @@
-LUMI-CON ALPHA WIRING HINTS
+LUMI-CON WIRING GUIDE (Quick Reference)
 
-the below wiring is for the integrated build however still works for isolated. if building just chat bridge then leave out all references to pico.
-if building the 6x6 then leave out all refernces to the tft screen
-if in doubt refer to the ino files 
+The wiring below is for the integrated build, but it also works for “6×6 only”.
+- If building **Chat Bridge only**, leave out all references to the Pico.
+- If building **6×6 only**, leave out all references to the TFT screen.
+If in doubt, refer to the `.ino` files.
+
 
 PARTS
 -----

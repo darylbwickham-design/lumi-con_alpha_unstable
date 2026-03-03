@@ -1,4 +1,4 @@
-Variables added by the v3 plugin
+Variables available in the Integrated plugin (v5.x)
 event (number)
 
 Meaning: Key index 0–35 (always the “base key number”, even for long presses)
@@ -88,3 +88,19 @@ Recommended use: Make everything feel professional (users see “Lights” not �
 Example: {{key_label}} ({{kind}})
 
 Best practice: use key_label everywhere you’d normally show a key number. Keep event only for debugging or internal mapping.
+
+device_status_text (text)
+
+Meaning: Single-line device health string (e.g. CONNECTED | RSSI -55 | 12s ago, or OFFLINE)
+
+Recommended use: Simple overlays/support text without assembling multiple vars.
+
+Example: {{device_status_text}}
+
+Notes (Key labels)
+
+Some plugin versions support separate key label maps for short vs long presses:
+- Key labels (Short 0–35)
+- Key labels (Long 0–35)
+
+The variable {{key_label}} automatically reflects the correct map for the press type.

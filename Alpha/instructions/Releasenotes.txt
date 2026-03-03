@@ -1,10 +1,16 @@
-# Release Notes — Lumi-Con Integrated Plugin (v1 → v5.1)
+# Release Notes — Lumi-Con Integrated Plugin (v1 → v5.2 feature highlights)
 
 Short, user-facing notes you can paste into GitHub Releases, README highlights, or YouTube descriptions.
 
 ---
 
-## v5.1 — Optional Debug Toasts (Latest)
+## v5.2 — Maintenance Release
+- Includes all v5.1 features.
+- v5.2 is typically a packaging/ID/docs tidy-up release.
+
+---
+
+## v5.1 — Optional Debug Toasts (Feature Highlight)
 - Added **optional debug toasts** inside Lumia (default OFF).
 - Toast modes:
   - **Important**: toasts only on **Connected** and **Offline**
